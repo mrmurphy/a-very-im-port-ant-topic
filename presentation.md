@@ -75,9 +75,13 @@ Our data is stored in IndexedDB, and we need to create, modify, and delete recor
 
 ---
 
-# Attempt 1
+# First Attempt
 
-Put in code for one port per operation
+_Put in code for one port per operation_
+
+---
+
+# What makes this hard and unpleasant?
 
 ---
 
@@ -87,3 +91,49 @@ Put in code for one port per operation
   - BUT
     - Service `/=` server
     - Ports `/=` HTTP + Promises
+
+---
+
+# The Actor Model
+
+The interaction between Elm & JS is modeled on a mature design pattern called *The Actor Model*
+
+TODO: Insert table of languages that use the actor model and their years of inception
+
+TODO: Cite the Elm Town episode
+
+---
+
+# The Actor Model: Information In & Information Out
+
+TODO: Make the example of text messages vs phone calls
+
+---
+
+# Second Attempt
+
+Show meaningful snippets from `InfoForOutside` and `InfoForElm`
+
+---
+
+# [fit] Why the Actor Model? A Case Study
+
+--- 
+TODO: Diagram of Day One before Web Workers
+---
+TODO: Diagram of Day One after Web Workers
+
+^ The API for Web Workers follows a pattern like the Actor Model. No re-architecting and almost zero work was required to connect the JS back up with Elm after moving all of the JS code into a Web worker. Instead of two actors passing messages, we now had three. That's all.
+---
+
+# [fit] DEMO TIME
+
+^ Demo the Day One Web app in full glory syncing multiple journals with hundreds of entries while still seamlessly navigating around the UI. Show off the async image loading as well.
+
+---
+
+# That's It!
+
+- Contact info
+- Sample code
+- Elm Town
