@@ -3,10 +3,10 @@ import { Main } from "./Main.elm";
 
 var app = Main.embed(document.getElementById("root"));
 
-app.ports.sendJsMsg.subscribe(msg => {
-  if (msg.tag == "LogError") {
-    console.error(msg.payload);
-  } else if (msg.tag == "CreateEntry") {
+app.ports.infoForOutside.subscribe(msg => {
+  if (msg.tag == "ErrorLogRequested") {
+    console.error(msg.data);
+  } else if (msg.tag == "EntryCreationRequested") {
     localforage
       .length()
       .then(length => {
@@ -15,20 +15,14 @@ app.ports.sendJsMsg.subscribe(msg => {
       })
       .then(sendEntries)
       .catch(console.error);
-  } else if (msg.tag == "UpdateEntry") {
+  } else if (msg.tag == "EntryModified") {
     localforage
-      .setItem("entry:" + msg.payload.id, msg.payload)
+      .setItem("entry:" + msg.data.id, msg.data)
       .then(sendEntries)
       .catch(console.error);
-  } else if (msg.tag == "DeleteEntry") {
+  } else if (msg.tag == "EntryDeleted") {
     localforage
-      .removeItem("entry:" + msg.payload)
-      .then(_ => localforage.length())
-      .then(length => {
-        if (length == 0) {
-          return Promise.all(defaultEntries.map(addEntry));
-        }
-      })
+      .removeItem("entry:" + msg.data)
       .then(sendEntries)
       .catch(console.error);
   }
@@ -41,11 +35,19 @@ function addEntry(entry) {
 function sendEntries() {
   var entries = [];
   localforage
-    .iterate(value => {
-      entries.push(value);
+    .length()
+    .then(length => {
+      if (length == 0) {
+        return Promise.all(defaultEntries.map(addEntry));
+      }
     })
+    .then(_ =>
+      localforage.iterate(value => {
+        entries.push(value);
+      })
+    )
     .then(() => {
-      app.ports.jsMsgs.send({ tag: "EntriesChanged", payload: entries });
+      app.ports.infoForElm.send({ tag: "EntriesChanged", data: entries });
     })
     .catch(console.error);
 }

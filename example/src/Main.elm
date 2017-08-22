@@ -5,9 +5,9 @@ import Date exposing (Date)
 import Element exposing (above, button, column, el, empty, header, html, image, layout, onLeft, row, text, textArea)
 import Element.Attributes exposing (alignBottom, center, contenteditable, fill, height, justify, maxHeight, maxWidth, padding, paddingLeft, paddingRight, paddingTop, percent, px, spacing, vary, verticalCenter, width)
 import Element.Events exposing (on, onClick, onInput, onMouseUp)
+import Entry exposing (Entry)
 import Html exposing (Html)
-import Json.Decode exposing (Decoder, at, decodeValue)
-import Json.Encode
+import OutsideInfo exposing (..)
 import Style exposing (hover, opacity, paddingRightHint, prop, style, styleSheet, variation)
 import Style.Border exposing (rounded)
 import Style.Color exposing (background, border)
@@ -26,33 +26,9 @@ type alias Model =
     }
 
 
-type alias Entry =
-    { id : Int
-    , date : Date
-    , content : String
-    }
-
-
 init : ( Model, Cmd Msg )
 init =
-    ( { entries =
-            [ { id = 0
-              , date = Date.fromTime -2542792568000
-              , content = "Harris said he didn’t think George ought to do anything that would have a tendency to make him sleepier than he always was, as it might be dangerous.  He said he didn’t very well understand how George was going to sleep any more than he did now, seeing that there were only twenty-four hours in each day, summer and winter alike; but thought that if he did sleep any more, he might just as well be dead, and so save his board and lodging."
-              }
-            , { id = 1
-              , date = Date.fromTime -2542691568000
-              , content = "We arranged to start on the following Saturday from Kingston.  Harris and I would go down in the morning, and take the boat up to Chertsey, and George, who would not be able to get away from the City till the afternoon (George goes to sleep at a bank from ten to four each day, except Saturdays, when they wake him up and put him outside at two), would meet us there."
-              }
-            , { id = 2
-              , date = Date.fromTime -2542590568000
-              , content = "Rainwater is the chief article of diet at supper.  The bread is two-thirds rainwater, the beefsteak-pie is exceedingly rich in it, and the jam, and the butter, and the salt, and the coffee have all combined with it to make soup."
-              }
-            , { id = 3
-              , date = Date.fromTime -2542489568000
-              , content = "We made a list of the things to be taken, and a pretty lengthy one it was, before we parted that evening.  The next day, which was Friday, we got them all together, and met in the evening to pack.  We got a big Gladstone for the clothes, and a couple of hampers for the victuals and the cooking utensils.  We moved the table up against the window, piled everything in a heap in the middle of the floor, and sat round and looked at it."
-              }
-            ]
+    ( { entries = []
       , editingIds = []
       , now = Date.fromTime 0
       }
@@ -64,56 +40,9 @@ init =
 ---- UPDATE ----
 
 
-type alias JsMsgBody =
-    { tag : String, payload : Json.Decode.Value }
-
-
-port sendJsMsg : JsMsgBody -> Cmd msg
-
-
-entryDecoder : Decoder Entry
-entryDecoder =
-    Json.Decode.map3 Entry
-        (Json.Decode.at [ "id" ] Json.Decode.int)
-        (Json.Decode.at [ "date" ] Json.Decode.float |> Json.Decode.map Date.fromTime)
-        (Json.Decode.at [ "content" ] Json.Decode.string)
-
-
-encodeEntry : Entry -> Json.Encode.Value
-encodeEntry entry =
-    Json.Encode.object
-        [ ( "id", Json.Encode.int entry.id )
-        , ( "date", Json.Encode.float (Date.toTime entry.date) )
-        , ( "content", Json.Encode.string entry.content )
-        ]
-
-
-decodeJsMsg : JsMsgBody -> Msg
-decodeJsMsg body =
-    let
-        decode decoder =
-            decodeValue decoder body.payload
-    in
-    case body.tag of
-        "EntriesChanged" ->
-            case decode (Json.Decode.list entryDecoder) of
-                Ok entries ->
-                    EntriesChanged entries
-
-                Err e ->
-                    LogErr e
-
-        _ ->
-            LogErr ("unrecognized jsMsg " ++ toString body)
-
-
-port jsMsgs : (JsMsgBody -> msg) -> Sub msg
-
-
 type Msg
     = NoOp
-    | JsMsg JsMsgBody
-    | EntriesChanged (List Entry)
+    | Outside InfoForElm
     | LogErr String
     | ToggleEntryEdit Int
     | SetNow Time
@@ -128,15 +57,14 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        JsMsg body ->
-            model ! [ sendJsMsg body ]
-
-        EntriesChanged entries ->
-            { model | entries = entries }
-                ! []
+        Outside infoForElm ->
+            case infoForElm of
+                EntriesChanged newEntries ->
+                    { model | entries = newEntries }
+                        ! []
 
         LogErr err ->
-            model ! [ sendJsMsg { tag = "LogError", payload = Json.Encode.string err } ]
+            model ! [ sendInfoOutside (ErrorLogRequested err) ]
 
         ToggleEntryEdit id ->
             let
@@ -157,21 +85,14 @@ update msg model =
 
         AddEntry ->
             model
-                ! [ sendJsMsg
-                        { tag = "CreateEntry", payload = Json.Encode.null }
-                  ]
+                ! [ sendInfoOutside EntryCreationRequested ]
 
         UpdateEntry entry ->
             model
-                ! [ sendJsMsg
-                        { tag = "UpdateEntry", payload = encodeEntry entry }
-                  ]
+                ! [ sendInfoOutside <| EntryModified entry ]
 
-        DeleteEntry id ->
-            model
-                ! [ sendJsMsg
-                        { tag = "DeleteEntry", payload = Json.Encode.int id }
-                  ]
+        DeleteEntry id_ ->
+            model ! [ sendInfoOutside (EntryDeleted id_) ]
 
 
 
@@ -198,7 +119,8 @@ type Variation
 sheet : Style.StyleSheet Styles Variation
 sheet =
     styleSheet
-        [ style Root
+        [ style NoStyle []
+        , style Root
             [ Style.Font.typeface [ "Bitter" ]
             , lineHeight 1.7
             , Style.Font.size 16
@@ -350,6 +272,6 @@ main =
             \model ->
                 Sub.batch
                     [ Time.every second SetNow
-                    , jsMsgs decodeJsMsg
+                    , getInfoFromOutside Outside LogErr
                     ]
         }
