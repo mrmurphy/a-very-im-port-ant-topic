@@ -1,118 +1,89 @@
 autoscale: true
+text: Lato Bold
+header: Lato Black
+code: Iosevka
 
-# A Very Im-port-ant Topic
+# [fit] A Very Im-port-ant Topic 
+or, how I learned to stop worrying and love ports
+## Murphy Randle
+- Work: [Day One](https://dayoneapp.com)
+- Twitter: [@splodingsocks](https://twitter.com/splodingsocks)
+- Github: [@splodingsocks](https://twitter.com/splodingsocks)
 
-Murphy Randle ([@splodingsocks](https://twitter.com/splodingsocks))
-
----
-
-# What we're about to talk about
-
----
-
-# Ports
-
-A common problem:
-
-> I need to do thing X, but there isn’t any package available on package.elm-lang.org that does it, and I [don’t have time to write it myself | can’t because it requires native javascript code]. There is a library on NPM that does it, though, how can I take advantage of that?
-
----
-# Ports
-
-The solution*:
-*(almost always)
-
-Use a port.
+![](img/title.jpg)
 
 ---
 
-> Ports allow type-checked asynchronous communication between Javascript and Elm
-> ~ Murphy Randle
+# [fit] Story Time
+## [fit] or, how this talk was born
+
+![](img/story-time.jpg)
+
+[.footer: Photo by Dariusz Sankowski on Unsplash]
 
 ---
-# Ports
+[.build-lists: true]
 
-Three important attributes of ports:
+## The Situation
+- Client-side database
+- Hand-written native code to wrap DB
 
-1. Communication
-2. Type-checking
-3. Asynchronous API
+## The Sadness
+- Runtime errors 😭
+- No compiler help
 
+[.footer: Story time]
 ---
 
-# 1. Communication
+## The Conversation
+- Mentioned in Slack bad experience with native code
+- Mentioned that using ports would be even worse
 
-Here's what ports look like:
+## The Change of Perspective
+- Evan replied
+- I had been using an incorrect mental model of ports
+- I revised my brain and re-architected
 
-```elm
--- Elm to JS
--- Send a word out to javascript to be spell-checked.
-port getSuggestions : {word: String} -> Cmd msg
-
--- JS to Elm
--- Listen for suggestions of correct word spellings.
-port suggestions : ({word: String, suggestions: List String} -> msg) -> Sub msg
-
--- (examples modified from guide.elm-lang.org)
-```
-
---- 
-
-# 2. Asynchronous API
-
+[.footer: Story time]
 ---
 
-# 2.1. Async Vs Sync
+# The Result
+- No more native code
+- 💸💰🤑💸💰🤑💸💰🤑
+- Elm & JS remain separate worlds with separate concerns
+- Scaling JS-Elm interaction is simple (a simple pattern is simple to follow)
 
-Here it is, short and sweet:
-
-- Synchronous APIs are for defining a **sequence of events**
-- Asynchronous APIs are for firing off and reacting to **single events**
+[.footer: Story time]
 
 ---
 
-# 2.1. Async Vs Sync
-
-## Sync vs async in jokes
+# Let's do it together
 
 ---
 
-# 2.1. Async Vs Sync
-
-Knock-knock jokes are synchronous.
-
-> Knock-knock
-> Who’s there?
-> Recursion
-> Recursion who?
-> Knock-knock
+TODO: Insert gif of http://pocketjournal.splode.co/ here
 
 ---
 
-# 2.1. Async Vs Sync
+Our data is stored in IndexedDB, and we need to create, modify, and delete records (for starters)
 
-Good dad-jokes can be asynchronous:
+---
+# [fit] Ports
+
+> [They're] like JavaScript-as-a-Service
+-- guide.elm-lang.org
 
 ---
 
-![](https://youtu.be/FFym8JwlYxY?t=33)
+# Attempt 1
+
+Put in code for one port per operation
 
 ---
 
-# 2.2. Ports vs Promises
+# JavaScript as a service
 
-Ports have an asynchronous API. Promises do not.
-
-- Treat JS as a service, but not as an HTTP server
-- No request / response pair
-- Msg in / Msg out
-
----
-> Wait a second. I thought promises were asynchronous!?
-
----
-
-# 2.2. Ports vs Promises
-
-Async API and async execution are not the same thing.
-
+- Ports make JavaScript == Service
+  - BUT
+    - Service `/=` server
+    - Ports `/=` HTTP + Promises
