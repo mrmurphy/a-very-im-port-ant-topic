@@ -1,7 +1,0 @@
-<ul id="post-list">
-    {{ range sort .Paginator.Pages "Date" "asc" }}
-        <li>
-            <a href='{{ .URL }}'>{{ .LinkTitle }}<h2>{{ .Description | markdownify }}</h2></a>
-        </li>
-    {{ end }}
-</ul>
