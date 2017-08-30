@@ -61,7 +61,7 @@ or, how I learned to stop worrying and love ports
 
 ---
 
-TODO: Insert gif of http://pocketjournal.splode.co/ here
+![fit](img/pocket-journal-video-small.mov)
 
 ---
 
@@ -75,9 +75,22 @@ Our data is stored in IndexedDB, and we need to create, modify, and delete recor
 
 ---
 
-# First Attempt
+# [fit] First Attempt
 
-_Put in code for one port per operation_
+---
+
+## Make a port for each request and its accompanying response
+```elm
+
+port updateEntryContents : Entry -> Cmd msg
+port updatedEntryContents : (Entry -> msg) -> Sub msg
+
+port createEntry : () -> Cmd msg
+port entryCreated : (Entry -> msg) -> Sub msg
+
+port deleteEntry : Int -> Cmd msg
+port entryDeleted : (Int -> msg) -> Sub msg
+```
 
 ---
 

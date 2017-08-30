@@ -15,7 +15,6 @@ import Style.Font exposing (lineHeight, typeface)
 import Style.Transition
 import Time exposing (Time, second)
 
-
 ---- MODEL ----
 
 
