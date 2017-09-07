@@ -225,10 +225,8 @@ Second, use just one port
 
 ---
 # Why the Actor Model? A Case Study
---- 
-TODO: Diagram of Day One before Web Workers
----
-TODO: Diagram of Day One after Web Workers
+---?image=graphics/Before@2x.png&size=contain
+---?image=graphics/After@2x.png&size=contain
 
 Note:
 The API for Web Workers follows a pattern like the Actor Model. No re-architecting and almost zero work was required to connect the JS back up with Elm after moving all of the JS code into a Web worker. Instead of two actors passing messages, we now had three. That's all.
