@@ -75,6 +75,22 @@ from guide.elm-lang.org
 
 # First Attempt
 
++++
+
+# Outgoing port
+```elm
+port doSomethingInJsWithAString : String -> Cmd msg
+-- That's it, no body definition
+```
+
+# Incoming Port
+```elm
+port stringsComingFromJs : (List String -> msg) -> Sub msg
+-- That's it, no body definition
+```
+
++++
+
 +++?code=example/src/BadPortExample.elm&lang=elm
 
 @[4-11](Make a port for each request and its accompanying response)
@@ -106,6 +122,16 @@ from guide.elm-lang.org
     - Ports `/=` HTTP + Promises
 
 ---
+
+# The Actor Model
+
++++
+
+# The Actor Model
+
+![](img/actor-model.jpg)
+
++++
 
 # The Actor Model
 
@@ -167,10 +193,10 @@ It's an established design for high concurrenct & fault tolerance.
 
 # Languages / Frameworks / APIs that use the Actor model
 
-- Scala (Akka) |
 - Erlang / Elixir |
-- Python (using Pulsar) |
 - Web Workers (in the HTML Standard) |
+- Scala (Akka) |
+- Python (using Pulsar) |
 - and more! |
 - Listen to Elm Town 13 for more background |
 
@@ -183,7 +209,7 @@ It's an established design for high concurrenct & fault tolerance.
 First, put the data in the right place
 - In this case, JS owns the data |
 - Notify the DB of changes to enties |
-- When chagnes happen, the DB sends all entries back to Elm |
+- When changes happen, the DB sends all entries back to Elm |
 
 +++
 
@@ -202,9 +228,12 @@ Second, use just one port
 @[57-60](Just two ports now, for the whole app)
 @[53-54](One generic data structure for sending information between worlds)
 @[42-46](Any and all messages to the outside appear in this type)
-@[49](Any and all messages that can come from the outside appear in this type)
-@[8-9](A single function for communicating with JS that produces a command. Encodes messages.)
-@[24-25](A single subscription for getting info from JS. Safely decodes messages.)
+@[49-50](Any and all messages that can come from the outside appear in this type)
+@[8](A single function for communicating with JS that produces a command)
+@[11-12](Handles all different message types and converts them to OutsideInfo)
+@[24](A single subscription for getting info from JS)
+@[29-32](Decodes data into a message based on the tag in OutsideInfo)
+@[34-35](If a message comes along we don't understand, we can log it, or show an error in the UI)
 
 +++?code=example/src/index.js
 
