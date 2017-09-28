@@ -19,6 +19,11 @@
 - Twitter: [@splodingsocks](https://twitter.com/splodingsocks)
 - Elm Town Podcast!
 
+Note:
+I'm Murphy Randle
+I'm the host of Elm Town
+and I work at Day One where we make a journaling app.
+Today I'm going to show you why ports are so important to us at Day One.
 ---?image=img/story-time.jpg&size=cover
 
 # Story Time
