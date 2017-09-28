@@ -85,8 +85,6 @@ from guide.elm-lang.org
 
 Note:
 - Elm guide says javascript as a service
-- Let's just go ahead and take a stab at that approach
-- Warning, this is not the correct approach.
 
 +++
 
@@ -101,6 +99,10 @@ port doSomethingInJsWithAString : String -> Cmd msg
 port stringsComingFromJs : (List String -> msg) -> Sub msg
 -- That's it, no body definition
 ```
+
+Note:
+- Let's just go ahead and take a stab at that approach
+- Warning, this is not the correct approach.
 
 ---
 
