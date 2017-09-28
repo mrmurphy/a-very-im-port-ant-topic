@@ -235,7 +235,6 @@ And we're not the first to the party.
 
 Let's simplify. Use just one port.
 - Don't "wrap" some particular JS library API |
-- Everything in JS is an implementation detail |
 - Design an API that makes sense for talking with JS |
 
 +++

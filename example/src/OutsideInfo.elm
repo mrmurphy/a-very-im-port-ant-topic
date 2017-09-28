@@ -8,17 +8,17 @@ import Json.Encode
 sendInfoOutside : InfoForOutside -> Cmd msg
 sendInfoOutside info =
     case info of
-        EntryCreationRequested ->
-            infoForOutside { tag = "EntryCreationRequested", data = Json.Encode.null }
+        CreateEntry ->
+            infoForOutside { tag = "CreateEntry", data = Json.Encode.null }
 
-        EntryModified entry ->
-            infoForOutside { tag = "EntryModified", data = encodeEntry entry }
+        ModifyEntry entry ->
+            infoForOutside { tag = "ModifyEntry", data = encodeEntry entry }
 
-        EntryDeleted id ->
-            infoForOutside { tag = "EntryDeleted", data = Json.Encode.int id }
+        DeleteEntry id ->
+            infoForOutside { tag = "DeleteEntry", data = Json.Encode.int id }
 
-        ErrorLogRequested err ->
-            infoForOutside { tag = "ErrorLogRequested", data = Json.Encode.string err }
+        LogError err ->
+            infoForOutside { tag = "LogError", data = Json.Encode.string err }
 
 
 getInfoFromOutside : (InfoForElm -> msg) -> (String -> msg) -> Sub msg
@@ -40,10 +40,10 @@ getInfoFromOutside tagger onError =
 
 
 type InfoForOutside
-    = EntryCreationRequested
-    | EntryModified Entry
-    | EntryDeleted Int
-    | ErrorLogRequested String
+    = CreateEntry
+    | ModifyEntry Entry
+    | DeleteEntry Int
+    | LogError String
 
 
 type InfoForElm
