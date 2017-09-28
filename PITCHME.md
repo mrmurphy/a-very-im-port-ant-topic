@@ -1,3 +1,5 @@
+theme: white
+
 ---?image=img/title.jpg&size=cover
 <style>
 .reveal .slides {
