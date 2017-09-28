@@ -89,8 +89,6 @@ port stringsComingFromJs : (List String -> msg) -> Sub msg
 -- That's it, no body definition
 ```
 
-+++
-
 +++?code=example/src/BadPortExample.elm&lang=elm
 
 @[4-11](Make a port for each request and its accompanying response)
@@ -117,7 +115,7 @@ port stringsComingFromJs : (List String -> msg) -> Sub msg
 # JavaScript as a service
 
 - Ports make JavaScript == Service
-  - BUT
+  - BUT 🛄
     - Service `/=` server
     - Ports `/=` HTTP + Promises
 
@@ -135,7 +133,7 @@ port stringsComingFromJs : (List String -> msg) -> Sub msg
 
 # The Actor Model
 
-The interaction between Elm & JS is modeled on a mature design pattern called *The Actor Model*
+The interaction between Elm & JS is modeled on this mature design pattern made for concurrent systems.
 
 +++
 
@@ -183,11 +181,8 @@ And we might never send any out, but still get some in:
 
 +++
 
-This is a good thing.
-
-+++
-
-It's an established design for high concurrenct & fault tolerance.
+This is a good thing. 👍
+And we're not the first to the party.
 
 +++
 
