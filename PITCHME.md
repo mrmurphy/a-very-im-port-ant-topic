@@ -281,7 +281,7 @@ Note:
 
 ---
 # Why the Actor Model? A Case Study
----?image=graphics/Before@2x.png&size=contain
++++?image=graphics/Before@2x.png&size=contain
 Note:
 - We had a problem
 - We were downloading so much data while syncing journals that it totally locked up the UI
@@ -289,13 +289,13 @@ Note:
 - Dreaded the big refactor and expected lots of changes
 - But:
 
----?image=graphics/After@2x.png&size=contain
++++?image=graphics/After@2x.png&size=contain
 
 Note:
 - Web workers use the same actor-model style API and message passing
 - All we had to do was move the code to a worker, and the main JS thread just became a message broker between Elm and the worker process
 - And here's how it looks in real life:
----
++++
 
 # DEMO TIME
 
