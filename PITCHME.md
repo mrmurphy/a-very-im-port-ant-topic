@@ -127,7 +127,7 @@ port stringsComingFromJs : (List String -> msg) -> Sub msg
   - What if a response comes back multiple times? |
   - When a response comes through, how do I connect it with a particular request? |
 
----
++++
 
 # JavaScript as a service
 
