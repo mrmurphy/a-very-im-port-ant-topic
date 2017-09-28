@@ -72,15 +72,21 @@ Photo by Dariusz Sankowski on Unsplash
 - Users can create, edit, and delete entries |
 - Data stored locally in IndexedDB |
 
----
+Note:
+- No IndexedDB package available for Elm
+- We're going to need ports for this
+- They're what allow Elm to talk back and forth with JS
+
++++
 
 > [Ports are] like JavaScript-as-a-Service
 
 from guide.elm-lang.org
 
----
-
-# First Attempt
+Note:
+- Elm guide says javascript as a service
+- Let's just go ahead and take a stab at that approach
+- Warning, this is not the correct approach.
 
 +++
 
@@ -95,6 +101,10 @@ port doSomethingInJsWithAString : String -> Cmd msg
 port stringsComingFromJs : (List String -> msg) -> Sub msg
 -- That's it, no body definition
 ```
+
+---
+
+# First [wrong] Attempt
 
 +++?code=example/src/BadPortExample.elm&lang=elm
 
@@ -126,15 +136,28 @@ port stringsComingFromJs : (List String -> msg) -> Sub msg
     - Service `/=` server
     - Ports `/=` HTTP + Promises
 
+Note:
+- Coming from JS and hearing something "as-a-service" may make me think we're talking about promises and HTTP requests
+- That's incorrect here
+- Service is not a server
+- Ports are not promises
+- They follow a different model entirely:
+
 ---
 
 # The Actor Model
+
+Note:
+- The actor model
 
 +++
 
 # The Actor Model
 
 ![](img/actor-model.jpg)
+
+Note:
+- The actor model?
 
 +++
 
@@ -208,22 +231,25 @@ And we're not the first to the party.
 
 +++
 
-First, put the data in the right place
-- In this case, JS owns the data |
+Let's simplify. Use just one port.
+- Don't "wrap" some particular JS library API |
+- Everything in JS is an implementation detail |
+- Design an API that makes sense for talking with JS |
+
++++
+
+Let's simplify more and let JS own all the data.
 - Notify the DB of changes to enties |
 - When changes happen, the DB sends all entries back to Elm |
 
 +++
 
-Second, use just one port
-- Don't "wrap" some particular JS library API |
-- Everything in JS is an implementation detail |
-- Design an API to talk with JS that makes sense |
-
-+++
-
-# Let's design a pattern for an API
+# Designing a pattern for an API
 - And let's call it the "Outside Info" pattern|
+
+Note:
+- Your API will be specific to each application you write
+- This is just a pattern for designing that API
 
 +++?code=example/src/OutsideInfo.elm
 
@@ -256,16 +282,22 @@ Second, use just one port
 ---
 # Why the Actor Model? A Case Study
 ---?image=graphics/Before@2x.png&size=contain
+Note:
+- We had a problem
+- We were downloading so much data while syncing journals that it totally locked up the UI
+- The solution was to use workers and move that into a thread
+- Dreaded the big refactor and expected lots of changes
+- But:
+
 ---?image=graphics/After@2x.png&size=contain
 
 Note:
-The API for Web Workers follows a pattern like the Actor Model. No re-architecting and almost zero work was required to connect the JS back up with Elm after moving all of the JS code into a Web worker. Instead of two actors passing messages, we now had three. That's all.
+- Web workers use the same actor-model style API and message passing
+- All we had to do was move the code to a worker, and the main JS thread just became a message broker between Elm and the worker process
+- And here's how it looks in real life:
 ---
 
 # DEMO TIME
-
-Note:
-Demo the Day One Web app in full glory syncing multiple journals with hundreds of entries while still seamlessly navigating around the UI. Show off the async image loading as well.
 
 ---
 
