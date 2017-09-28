@@ -20,10 +20,12 @@
 - Elm Town Podcast!
 
 Note:
-I'm Murphy Randle
-I'm the host of Elm Town
-and I work at Day One where we make a journaling app.
-Today I'm going to show you why ports are so important to us at Day One.
+- I'm Murphy Randle
+- I'm the host of Elm Town
+- and I work at Day One where we make a journaling app.
+- Today I'm going to show you why ports are so important to us at Day One.
+- But first:
+
 ---?image=img/story-time.jpg&size=cover
 
 # Story Time
