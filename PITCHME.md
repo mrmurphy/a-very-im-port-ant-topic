@@ -250,7 +250,6 @@ Second, use just one port
   - Serialize data on exit |
   - Deserialize data on entrance |
 - Send info, receive info, no requests/responses |
-- Try to have the data live in just one place instead of syncing state |
 
 ---
 # Why the Actor Model? A Case Study
@@ -269,7 +268,3 @@ Demo the Day One Web app in full glory syncing multiple journals with hundreds o
 ---
 
 # That's It!
-
-- Contact info
-- Sample code
-- Elm Town
